@@ -38,8 +38,10 @@ public class PlayerMovement : MonoBehaviour
         rigidbody.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
     }
 
+    //When the player collides with an item
     void OnTriggerEnter2D(Collider2D other)
     {
+        //If the items has the "Circle" tag assigned to it, add one to the circle counter and destroy it.
         if (other.gameObject.CompareTag("Circle"))
         {
             Destroy(other.gameObject);
