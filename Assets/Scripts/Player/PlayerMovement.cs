@@ -42,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Circle"))
         {
+            Destroy(other.gameObject);
             ci.circleCount++;
         }
     }
