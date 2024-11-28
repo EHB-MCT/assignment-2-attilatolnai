@@ -12,6 +12,8 @@ public class PlayerMovement : MonoBehaviour
     //The current direction of the player asset
     private Vector2 moveDirection;
 
+    public circleItem ci;
+
     //Called every frame. Processes player input and updates movement direction.
     void Update(){
         ProcessInputs();
@@ -34,5 +36,16 @@ public class PlayerMovement : MonoBehaviour
     //Applies the calculated movement.
     void Move(){
         rigidbody.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
+    }
+
+    //When the player collides with an item
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        //If the items has the "Circle" tag assigned to it, add one to the circle counter and destroy it.
+        if (other.gameObject.CompareTag("Circle"))
+        {
+            Destroy(other.gameObject);
+            ci.circleCount++;
+        }
     }
 }
