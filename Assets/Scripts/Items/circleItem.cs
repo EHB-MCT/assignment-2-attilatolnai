@@ -12,9 +12,16 @@ public class circleItem : MonoBehaviour
     //Reference to the TextMeshProUGUI component used to display the circle count.
     public TextMeshProUGUI circleText;
 
+    public GameObject startArea;
+    public TextMeshProUGUI startAreaText;
+
     // Update the text component to show the current circle count.
     void Update()
     {
         circleText.text = "Circle Count: " + circleCount.ToString();
+        if(circleCount > 0 && !startArea.activeSelf)
+        {
+            startArea.SetActive(true);
+        }
     }
 }

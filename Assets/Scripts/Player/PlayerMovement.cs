@@ -47,5 +47,14 @@ public class PlayerMovement : MonoBehaviour
             Destroy(other.gameObject);
             ci.circleCount++;
         }
+
+        if (other.gameObject.CompareTag("StartArea"))
+        {
+            if(ci.circleCount > 0)
+            {
+                ci.startAreaText.text = "Circles Collected: " + ci.circleCount.ToString();
+                ci.startAreaText.gameObject.SetActive(true);
+            }
+        }
     }
 }
