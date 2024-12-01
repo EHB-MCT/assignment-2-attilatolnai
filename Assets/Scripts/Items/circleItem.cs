@@ -13,15 +13,43 @@ public class circleItem : MonoBehaviour
     public TextMeshProUGUI circleText;
 
     public GameObject startArea;
-    public TextMeshProUGUI startAreaText;
+    public GameObject gameOverMenu;
+    public TextMeshProUGUI circlesCollectedText;
+    public TextMeshProUGUI timeSpentText;
+
+    private float timeSpent;
+    private bool isGameRunning = true;
 
     // Update the text component to show the current circle count.
     void Update()
     {
+        if (isGameRunning)
+        {
+            timeSpent += Time.deltaTime;
+        }
+
         circleText.text = "Circle Count: " + circleCount.ToString();
         if(circleCount > 0 && !startArea.activeSelf)
         {
             startArea.SetActive(true);
         }
+    }
+
+    public void GameOver()
+    {
+        isGameRunning = false;
+
+        gameOverMenu.SetActive(true);
+
+        circlesCollectedText.text = "Circles collected: " + circleCount.ToString();
+        timeSpentText.text = "Time spent: " + Mathf.FloorToInt(timeSpent) + "seconds";
+
+        Time.timeScale = 0f;
+    }
+
+    public void RestartGame()
+    {
+        Time.timeScale = 1f;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
     }
 }

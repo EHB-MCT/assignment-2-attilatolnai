@@ -52,8 +52,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if(ci.circleCount > 0)
             {
-                ci.startAreaText.text = "Circles Collected: " + ci.circleCount.ToString();
-                ci.startAreaText.gameObject.SetActive(true);
+                ci.GameOver();
             }
         }
     }
