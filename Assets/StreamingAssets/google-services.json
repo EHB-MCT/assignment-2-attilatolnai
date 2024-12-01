@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "574942263026",
+    "project_id": "treasurerush-b009e",
+    "storage_bucket": "treasurerush-b009e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:574942263026:android:ce44a43b9de3f8c324826b",
+        "android_client_info": {
+          "package_name": "com.AttilaTolnai.TreasureRush"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5313f4grjja44QPBfRjXWKXlpLGR_O28"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
