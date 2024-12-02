@@ -39,17 +39,33 @@ public class circleItem : MonoBehaviour
         }
     }
 
+    public void TriggerGameOver()
+    {
+        if(gameManager != null)
+        {
+            gameManager.GameOver();
+        }
+        else
+        {
+            Debug.LogError("gameManager reference is not set!");
+        }
+    }
+
+    /*
     public void GameOver()
     {
         isGameRunning = false;
 
         gameOverMenu.SetActive(true);
 
+        FetchPreviousPlayerData();
+
         circlesCollectedText.text = "Circles collected: " + circleCount.ToString();
         timeSpentText.text = "Time spent: " + Mathf.FloorToInt(timeSpent) + "seconds";
 
         Time.timeScale = 0f;
     }
+    */
 
     public void SubmitDataToFirebase()
     {
@@ -62,6 +78,18 @@ public class circleItem : MonoBehaviour
         }
 
         gameManager.SubmitPlayerData(playerName, circleCount, Mathf.FloorToInt(timeSpent));
+    }
+
+    void FetchData()
+    {
+        if (gameManager != null)
+        {
+            gameManager.FetchPreviousPlayerData();
+        }
+        else
+        {
+            Debug.LogError("gameManager reference is not set!");
+        }
     }
 
     public void RestartGame()
