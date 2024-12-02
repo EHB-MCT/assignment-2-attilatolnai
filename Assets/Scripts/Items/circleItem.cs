@@ -17,6 +17,9 @@ public class circleItem : MonoBehaviour
     public TextMeshProUGUI circlesCollectedText;
     public TextMeshProUGUI timeSpentText;
 
+    public TMP_InputField playerNameInput;
+    public gameManager gameManager;
+
     private float timeSpent;
     private bool isGameRunning = true;
 
@@ -29,6 +32,7 @@ public class circleItem : MonoBehaviour
         }
 
         circleText.text = "Circle Count: " + circleCount.ToString();
+
         if(circleCount > 0 && !startArea.activeSelf)
         {
             startArea.SetActive(true);
@@ -45,6 +49,19 @@ public class circleItem : MonoBehaviour
         timeSpentText.text = "Time spent: " + Mathf.FloorToInt(timeSpent) + "seconds";
 
         Time.timeScale = 0f;
+    }
+
+    public void SubmitDataToFirebase()
+    {
+        string playerName = playerNameInput.text;
+
+        if (string.IsNullOrEmpty(playerName))
+        {
+            Debug.LogWarning("Player name is empty!");
+            return;
+        }
+
+        gameManager.SubmitPlayerData(playerName, circleCount, Mathf.FloorToInt(timeSpent));
     }
 
     public void RestartGame()
