@@ -8,19 +8,24 @@ using Firebase.Extensions;
 
 public class gameManager : MonoBehaviour
 {
-    
+    //Firebase
     private Firebase.FirebaseApp app;
     private DatabaseReference databaseReference;
 
+    //GameOver UI Panel
     public GameObject gameOverMenu;
+
+    //Text elements inside the game over screen
     public TextMeshProUGUI circlesCollectedText;
     public TextMeshProUGUI timeSpentText;
     public TextMeshProUGUI previousPlayerDataText;
 
+    //Data values
     public int circleCount;
     public float timeSpent;
     public bool isGameRunning;
 
+    //Executed when the project starts
     void Start()
     {
         gameOverMenu.SetActive(false);
@@ -28,6 +33,7 @@ public class gameManager : MonoBehaviour
         
     }
 
+    //Initializes Firebase
     private void InitializeFirebase()
     {
         Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
@@ -35,21 +41,18 @@ public class gameManager : MonoBehaviour
             var dependencyStatus = task.Result;
             if (dependencyStatus == Firebase.DependencyStatus.Available)
             {
-                // Create and hold a reference to your FirebaseApp,
-                // where app is a Firebase.FirebaseApp property of your application class.
                 app = Firebase.FirebaseApp.DefaultInstance;
                 databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
                 Debug.Log("Firebase initialized successfully!");
 
-                // Set a flag here to indicate whether Firebase is ready to use by your app.
             } else {
                 UnityEngine.Debug.LogError(System.String.Format(
                 "Could not resolve all Firebase dependencies: {0}", dependencyStatus));
-                // Firebase Unity SDK is not safe to use here.
             }
         });
     }
 
+    //When the player gets a game over
     public void GameOver()
     {
         isGameRunning = false;
@@ -64,6 +67,7 @@ public class gameManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
+    //Send player data to the database
     public void SubmitPlayerData(string playerName, int circleCount, float timeSpent)
     {
         if(databaseReference == null)
@@ -72,6 +76,7 @@ public class gameManager : MonoBehaviour
             return;
         }
 
+        //Add an entry under "scores" in the database
         string key = databaseReference.Child("scores").Push().Key;
         var entryData = new Dictionary<string, object>
         {
@@ -93,6 +98,7 @@ public class gameManager : MonoBehaviour
         });
     }
 
+    //Get data from the previous player
     public void FetchPreviousPlayerData()
     {
         if (databaseReference == null)

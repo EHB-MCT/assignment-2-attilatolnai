@@ -17,7 +17,10 @@ public class circleItem : MonoBehaviour
     public TextMeshProUGUI circlesCollectedText;
     public TextMeshProUGUI timeSpentText;
 
+    //Inputfield for player name
     public TMP_InputField playerNameInput;
+
+    //Call the gameManager script
     public gameManager gameManager;
 
     private float timeSpent;
@@ -39,6 +42,7 @@ public class circleItem : MonoBehaviour
         }
     }
 
+    //Trigger to show the game over screen
     public void TriggerGameOver()
     {
         if(gameManager != null)
@@ -51,22 +55,7 @@ public class circleItem : MonoBehaviour
         }
     }
 
-    /*
-    public void GameOver()
-    {
-        isGameRunning = false;
-
-        gameOverMenu.SetActive(true);
-
-        FetchPreviousPlayerData();
-
-        circlesCollectedText.text = "Circles collected: " + circleCount.ToString();
-        timeSpentText.text = "Time spent: " + Mathf.FloorToInt(timeSpent) + "seconds";
-
-        Time.timeScale = 0f;
-    }
-    */
-
+    //Trigger to send data to database
     public void SubmitDataToFirebase()
     {
         string playerName = playerNameInput.text;
@@ -80,6 +69,7 @@ public class circleItem : MonoBehaviour
         gameManager.SubmitPlayerData(playerName, circleCount, Mathf.FloorToInt(timeSpent));
     }
 
+    //Get data from database
     void FetchData()
     {
         if (gameManager != null)
@@ -92,6 +82,7 @@ public class circleItem : MonoBehaviour
         }
     }
 
+    //When the restart button is clicked
     public void RestartGame()
     {
         Time.timeScale = 1f;
