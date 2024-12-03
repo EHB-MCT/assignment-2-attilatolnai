@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 moveDirection;
 
     public circleItem ci;
+    public gameManager gm;
 
     //Called every frame. Processes player input and updates movement direction.
     void Update(){
@@ -50,9 +51,10 @@ public class PlayerMovement : MonoBehaviour
 
         if (other.gameObject.CompareTag("StartArea"))
         {
-            if(ci.circleCount > 0)
+            if (ci.circleCount > 0)
             {
-                ci.GameOver();
+                gm.circleCount = ci.circleCount; // Pass circleCount to the gameManager
+                gm.GameOver(); // Trigger GameOver from the gameManager
             }
         }
     }
