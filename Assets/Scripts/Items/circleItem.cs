@@ -17,6 +17,12 @@ public class circleItem : MonoBehaviour
     public TextMeshProUGUI circlesCollectedText;
     public TextMeshProUGUI timeSpentText;
 
+    //Inputfield for player name
+    public TMP_InputField playerNameInput;
+
+    //Call the gameManager script
+    public gameManager gameManager;
+
     private float timeSpent;
     private bool isGameRunning = true;
 
@@ -29,24 +35,54 @@ public class circleItem : MonoBehaviour
         }
 
         circleText.text = "Circle Count: " + circleCount.ToString();
+
         if(circleCount > 0 && !startArea.activeSelf)
         {
             startArea.SetActive(true);
         }
     }
 
-    public void GameOver()
+    //Trigger to show the game over screen
+    public void TriggerGameOver()
     {
-        isGameRunning = false;
-
-        gameOverMenu.SetActive(true);
-
-        circlesCollectedText.text = "Circles collected: " + circleCount.ToString();
-        timeSpentText.text = "Time spent: " + Mathf.FloorToInt(timeSpent) + "seconds";
-
-        Time.timeScale = 0f;
+        if(gameManager != null)
+        {
+            gameManager.GameOver();
+        }
+        else
+        {
+            Debug.LogError("gameManager reference is not set!");
+        }
     }
 
+    //Trigger to send data to database
+    public void SubmitDataToFirebase()
+    {
+        string playerName = playerNameInput.text;
+
+        if (string.IsNullOrEmpty(playerName))
+        {
+            Debug.LogWarning("Player name is empty!");
+            return;
+        }
+
+        gameManager.SubmitPlayerData(playerName, circleCount, Mathf.FloorToInt(timeSpent));
+    }
+
+    //Get data from database
+    void FetchData()
+    {
+        if (gameManager != null)
+        {
+            gameManager.FetchPreviousPlayerData();
+        }
+        else
+        {
+            Debug.LogError("gameManager reference is not set!");
+        }
+    }
+
+    //When the restart button is clicked
     public void RestartGame()
     {
         Time.timeScale = 1f;
