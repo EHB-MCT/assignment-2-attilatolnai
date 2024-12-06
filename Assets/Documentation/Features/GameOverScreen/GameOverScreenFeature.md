@@ -1,7 +1,7 @@
 # GameOverScreen feature documentation
 
 ## Overview
-# This feature had as goals:
+### This feature had as goals:
 - To add a game over screen when the player collides with the starting area whenever the player has at least one circle in his possesion.
 - Display the amount of circles collected and time spent in game
 - Display an inputfield where the player can type their name
