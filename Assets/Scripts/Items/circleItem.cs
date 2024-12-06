@@ -23,39 +23,19 @@ public class circleItem : MonoBehaviour
     //Call the gameManager script
     public gameManager gameManager;
 
+    /*
     private float timeSpent;
     private bool isGameRunning = true;
+    */
 
     // Update the text component to show the current circle count.
     void Update()
     {
-        if (isGameRunning)
-        {
-            timeSpent += Time.deltaTime;
-        }
-
         circleText.text = "Circle Count: " + circleCount.ToString();
-
-        if(circleCount > 0 && !startArea.activeSelf)
-        {
-            startArea.SetActive(true);
-        }
-    }
-
-    //Trigger to show the game over screen
-    public void TriggerGameOver()
-    {
-        if(gameManager != null)
-        {
-            gameManager.GameOver();
-        }
-        else
-        {
-            Debug.LogError("gameManager reference is not set!");
-        }
     }
 
     //Trigger to send data to database
+    /*
     public void SubmitDataToFirebase()
     {
         string playerName = playerNameInput.text;
@@ -68,8 +48,10 @@ public class circleItem : MonoBehaviour
 
         gameManager.SubmitPlayerData(playerName, circleCount, Mathf.FloorToInt(timeSpent));
     }
+    */
 
     //Get data from database
+    /*
     void FetchData()
     {
         if (gameManager != null)
@@ -81,11 +63,5 @@ public class circleItem : MonoBehaviour
             Debug.LogError("gameManager reference is not set!");
         }
     }
-
-    //When the restart button is clicked
-    public void RestartGame()
-    {
-        Time.timeScale = 1f;
-        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
-    }
+    */
 }

@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 moveDirection;
 
     public circleItem ci;
+    public triangleItem ti;
+    public starItem si;
     public gameManager gm;
 
     //Called every frame. Processes player input and updates movement direction.
@@ -48,13 +50,22 @@ public class PlayerMovement : MonoBehaviour
             Destroy(other.gameObject);
             ci.circleCount++;
         }
+        else if (other.gameObject.CompareTag("Triangle"))
+        {
+            Destroy(other.gameObject);
+            ti.triangleCount++;
+        }
+        else if (other.gameObject.CompareTag("Star"))
+        {
+            Destroy(other.gameObject);
+            si.starCount++;
+        }
 
         if (other.gameObject.CompareTag("StartArea"))
         {
-            if (ci.circleCount > 0)
+            if (ci.circleCount > 0 || ti.triangleCount > 0 || si.starCount > 0)
             {
-                gm.circleCount = ci.circleCount; // Pass circleCount to the gameManager
-                gm.GameOver(); // Trigger GameOver from the gameManager
+                gm.GameOver();
             }
         }
     }
