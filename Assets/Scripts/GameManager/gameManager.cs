@@ -32,6 +32,9 @@ public class gameManager : MonoBehaviour
     public TextMeshProUGUI previousPlayerDataText;
     public TextMeshProUGUI displayPlayerName;
     public TextMeshProUGUI totalScoreText;
+
+    public TextMeshProUGUI topPlayersDataText;
+
     public Button sendButton;
 
     //Data values
@@ -49,7 +52,8 @@ public class gameManager : MonoBehaviour
     public timeTracker tt;
     public sendPlayerData spd;
     public UIManager uim;
-    //public ScoreCalculator sc;
+    public ScoreCalculator sc;
+    public Leaderboard lb;
 
     public DatabaseReference databaseReference
     {
@@ -68,10 +72,7 @@ public class gameManager : MonoBehaviour
             tt.ResetTime();
             tt.StartTimer();
         }
-        if (sendButton != null)
-        {
-            sendButton.onClick.AddListener(OnSendButtonClicked);
-        }
+
         if (uim != null)
         {
             playerName = uim.playerName;
@@ -80,16 +81,6 @@ public class gameManager : MonoBehaviour
         else
         {
             Debug.LogError("UIManager not assigned in gameManager!");
-        }
-        
-    }
-
-    private void OnSendButtonClicked()
-    {
-        if (spd != null)
-        {
-            string playerName = "Player"; // Or retrieve the player name from the input field
-            spd.SubmitPlayerData(playerName, circleCount, triangleCount, starCount, timeSpent);
         }
     }
 
@@ -106,7 +97,19 @@ public class gameManager : MonoBehaviour
                 firebaseInitialized = true;
                 Debug.Log("Firebase initialized successfully!");
 
-            } else {
+                if (firebaseInitialized && lb != null)
+                {
+                    lb.Initialize(databaseReference);
+                    Debug.Log("Leaderboard initialized successfully!");
+                }
+                else
+                {
+                    Debug.LogError("Leaderboard script is not assigned or Firebase is not initialized.");
+                }
+
+            } 
+            else 
+            {
                 UnityEngine.Debug.LogError(System.String.Format(
                 "Could not resolve all Firebase dependencies: {0}", dependencyStatus));
             }
@@ -120,6 +123,8 @@ public class gameManager : MonoBehaviour
 
         gameOverMenu.SetActive(true);
 
+        int totalPoints = sc.GetTotalPoints();
+
         if (tt != null)
         {
             tt.StopTimer();
@@ -129,7 +134,7 @@ public class gameManager : MonoBehaviour
         sendPlayerData spd = FindObjectOfType<sendPlayerData>();
         if (spd != null)
         {
-            spd.SubmitPlayerData(uim.playerName, ci.circleCount, ti.triangleCount, si.starCount, tt.timeSpent);
+            spd.SubmitPlayerData(uim.playerName, ci.circleCount, ti.triangleCount, si.starCount, tt.timeSpent, totalPoints);
         }
 
         FetchPreviousPlayerData();
@@ -142,8 +147,11 @@ public class gameManager : MonoBehaviour
         circlesCollectedText.text = "Circles collected: " + circleCount.ToString();
         trianglesCollectedText.text = "Triangles collected: " + triangleCount.ToString();
         starsCollectedText.text = "Stars collected: " + starCount.ToString();
+        totalScoreText.text = "Total points: " + totalPoints.ToString();
 
-        Time.timeScale = 0f;
+        Time.timeScale = 0f;        
+
+        DisplayTopPlayers();
     }
 
     //Get data from the previous player
@@ -175,6 +183,7 @@ public class gameManager : MonoBehaviour
                         string triangleCount = child.Child("triangleCount").Value?.ToString();
                         string starCount = child.Child("starCount").Value?.ToString();
                         string timeSpent = child.Child("timeSpent").Value?.ToString();
+                        string totalPoints = child.Child("totalPoints").Value?.ToString();
 
                         // Update the UI text with the fetched data.
                         previousPlayerDataText.text = "From the database:\n" +
@@ -182,7 +191,8 @@ public class gameManager : MonoBehaviour
                                                       $"Circles Collected: {circleCount}\n" +
                                                       $"Triangles Collected: {triangleCount}\n" +
                                                       $"Stars Collected: {starCount}\n" +
-                                                      $"Time Spent: {timeSpent} seconds";
+                                                      $"Time Spent: {timeSpent} seconds\n" +
+                                                      $"Total Points Scored: {totalPoints}";
                         Debug.Log("Previous player data updated successfully.");
                     }
                 }
@@ -193,6 +203,18 @@ public class gameManager : MonoBehaviour
                 }
             }
         });
+    }
+
+    public void DisplayTopPlayers()
+    {
+        if (lb != null)
+        {
+            lb.FetchTopPlayers();
+        }
+        else
+        {
+            Debug.LogError("Leaderboard script is not assigned in gameManager!");
+        }
     }
 }
 

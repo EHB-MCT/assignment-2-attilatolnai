@@ -37,5 +37,10 @@ public class ScoreCalculator : MonoBehaviour
             totalPointsDisplay.text = "Total Points: " + totalPoints.ToString();
         }
     }
+
+    public int GetTotalPoints()
+    {
+        return totalPoints;
+    }
 }
 
