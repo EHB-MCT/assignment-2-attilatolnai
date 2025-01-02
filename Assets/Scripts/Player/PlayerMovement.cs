@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     public triangleItem ti;
     public starItem si;
     public gameManager gm;
+    public ScoreCalculator sc;
 
     //Called every frame. Processes player input and updates movement direction.
     void Update(){
@@ -48,17 +49,20 @@ public class PlayerMovement : MonoBehaviour
         if (other.gameObject.CompareTag("Circle"))
         {
             Destroy(other.gameObject);
-            ci.circleCount++;
+            sc.ci.circleCount++;
+            sc.UpdateTotalScore();
         }
         else if (other.gameObject.CompareTag("Triangle"))
         {
             Destroy(other.gameObject);
-            ti.triangleCount++;
+            sc.ti.triangleCount++;
+            sc.UpdateTotalScore();
         }
         else if (other.gameObject.CompareTag("Star"))
         {
             Destroy(other.gameObject);
-            si.starCount++;
+            sc.si.starCount++;
+            sc.UpdateTotalScore();
         }
 
         if (other.gameObject.CompareTag("StartArea"))

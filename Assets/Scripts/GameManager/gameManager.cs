@@ -18,12 +18,20 @@ public class gameManager : MonoBehaviour
 
     //Text elements inside the game over screen
     public TMP_InputField playerNameInput;
+
     public TextMeshProUGUI circlesCollectedText;
+    public TextMeshProUGUI circlePointsUI;
+
     public TextMeshProUGUI trianglesCollectedText;
+    public TextMeshProUGUI trianglePointsUI;
+
     public TextMeshProUGUI starsCollectedText;
+    public TextMeshProUGUI starPointsUI;
+
     public TextMeshProUGUI timeSpentText;
     public TextMeshProUGUI previousPlayerDataText;
     public TextMeshProUGUI displayPlayerName;
+    public TextMeshProUGUI totalScoreText;
     public Button sendButton;
 
     //Data values
@@ -41,6 +49,7 @@ public class gameManager : MonoBehaviour
     public timeTracker tt;
     public sendPlayerData spd;
     public UIManager uim;
+    //public ScoreCalculator sc;
 
     public DatabaseReference databaseReference
     {
