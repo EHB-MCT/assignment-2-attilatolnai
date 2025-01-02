@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Circle
   - StartArea
+  - Star
+  - Triangle
   layers:
   - Default
   - TransparentFX

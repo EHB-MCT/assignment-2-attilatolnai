@@ -10,27 +10,78 @@ public class gameManager : MonoBehaviour
 {
     //Firebase
     private Firebase.FirebaseApp app;
-    private DatabaseReference databaseReference;
+    public DatabaseReference _databaseReference;
+    public bool firebaseInitialized = false;
 
     //GameOver UI Panel
     public GameObject gameOverMenu;
 
     //Text elements inside the game over screen
+    public TMP_InputField playerNameInput;
     public TextMeshProUGUI circlesCollectedText;
+    public TextMeshProUGUI trianglesCollectedText;
+    public TextMeshProUGUI starsCollectedText;
     public TextMeshProUGUI timeSpentText;
     public TextMeshProUGUI previousPlayerDataText;
+    public TextMeshProUGUI displayPlayerName;
+    public Button sendButton;
 
     //Data values
     public int circleCount;
+    public int triangleCount;
+    public int starCount;
     public float timeSpent;
     public bool isGameRunning;
+    public string playerName;
+
+    // Reference to other scripts
+    public circleItem ci;
+    public triangleItem ti;
+    public starItem si;
+    public timeTracker tt;
+    public sendPlayerData spd;
+    public UIManager uim;
+
+    public DatabaseReference databaseReference
+    {
+        get {return _databaseReference; }
+        set {_databaseReference = value; }
+    }
 
     //Executed when the project starts
     void Start()
     {
         gameOverMenu.SetActive(false);
         InitializeFirebase();
+
+        if (tt != null)
+        {
+            tt.ResetTime();
+            tt.StartTimer();
+        }
+        if (sendButton != null)
+        {
+            sendButton.onClick.AddListener(OnSendButtonClicked);
+        }
+        if (uim != null)
+        {
+            playerName = uim.playerName;
+            Debug.Log("Player Name: " + playerName);
+        }
+        else
+        {
+            Debug.LogError("UIManager not assigned in gameManager!");
+        }
         
+    }
+
+    private void OnSendButtonClicked()
+    {
+        if (spd != null)
+        {
+            string playerName = "Player"; // Or retrieve the player name from the input field
+            spd.SubmitPlayerData(playerName, circleCount, triangleCount, starCount, timeSpent);
+        }
     }
 
     //Initializes Firebase
@@ -43,6 +94,7 @@ public class gameManager : MonoBehaviour
             {
                 app = Firebase.FirebaseApp.DefaultInstance;
                 databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
+                firebaseInitialized = true;
                 Debug.Log("Firebase initialized successfully!");
 
             } else {
@@ -59,43 +111,30 @@ public class gameManager : MonoBehaviour
 
         gameOverMenu.SetActive(true);
 
-        FetchPreviousPlayerData();
-
-        circlesCollectedText.text = "Circles collected: " + circleCount.ToString();
-        timeSpentText.text = "Time spent: " + Mathf.FloorToInt(timeSpent) + " seconds";
-
-        Time.timeScale = 0f;
-    }
-
-    //Send player data to the database
-    public void SubmitPlayerData(string playerName, int circleCount, float timeSpent)
-    {
-        if(databaseReference == null)
+        if (tt != null)
         {
-            Debug.LogError("Firebase not initialized");
-            return;
+            tt.StopTimer();
+            timeSpentText.text = "Time spent: " + Mathf.FloorToInt(tt.timeSpent) + " seconds";
         }
 
-        //Add an entry under "scores" in the database
-        string key = databaseReference.Child("scores").Push().Key;
-        var entryData = new Dictionary<string, object>
+        sendPlayerData spd = FindObjectOfType<sendPlayerData>();
+        if (spd != null)
         {
-            { "playerName", playerName },
-            { "circleCount", circleCount },
-            { "timeSpent", timeSpent }
-        };
+            spd.SubmitPlayerData(uim.playerName, ci.circleCount, ti.triangleCount, si.starCount, tt.timeSpent);
+        }
 
-        databaseReference.Child("scores").Child(key).SetValueAsync(entryData).ContinueWithOnMainThread(task =>
-        {
-            if (task.IsCompleted)
-            {
-                Debug.Log("Data submitted successfully!");
-            }
-            else
-            {
-                Debug.LogError($"Error submitting data: {task.Exception}");
-            }
-        });
+        FetchPreviousPlayerData();
+
+        circleCount = ci.circleCount;
+        triangleCount = ti.triangleCount;
+        starCount = si.starCount;
+
+        displayPlayerName.text = "Player name: " + uim.playerName;
+        circlesCollectedText.text = "Circles collected: " + circleCount.ToString();
+        trianglesCollectedText.text = "Triangles collected: " + triangleCount.ToString();
+        starsCollectedText.text = "Stars collected: " + starCount.ToString();
+
+        Time.timeScale = 0f;
     }
 
     //Get data from the previous player
@@ -124,11 +163,16 @@ public class gameManager : MonoBehaviour
                     {
                         string playerName = child.Child("playerName").Value?.ToString();
                         string circleCount = child.Child("circleCount").Value?.ToString();
+                        string triangleCount = child.Child("triangleCount").Value?.ToString();
+                        string starCount = child.Child("starCount").Value?.ToString();
                         string timeSpent = child.Child("timeSpent").Value?.ToString();
 
                         // Update the UI text with the fetched data.
-                        previousPlayerDataText.text = $"Last Player: {playerName}\n" +
+                        previousPlayerDataText.text = "From the database:\n" +
+                                                      $"Last Player: {playerName}\n" +
                                                       $"Circles Collected: {circleCount}\n" +
+                                                      $"Triangles Collected: {triangleCount}\n" +
+                                                      $"Stars Collected: {starCount}\n" +
                                                       $"Time Spent: {timeSpent} seconds";
                         Debug.Log("Previous player data updated successfully.");
                     }
