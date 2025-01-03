@@ -10,7 +10,7 @@ public class sendPlayerData : MonoBehaviour
 
     public gameManager gm;
 
-    public void SubmitPlayerData(string playerName, int circleCount, int triangleCount, int starCount, float timeSpent)
+    public void SubmitPlayerData(string playerName, int circleCount, int triangleCount, int starCount, float timeSpent, int totalPoints)
     {
         gameManager gm = FindObjectOfType<gameManager>();
         if (gm != null && gm.firebaseInitialized)
@@ -30,7 +30,8 @@ public class sendPlayerData : MonoBehaviour
             { "circleCount", circleCount },
             { "triangleCount", triangleCount },
             { "starCount", starCount },
-            { "timeSpent", timeSpent }
+            { "timeSpent", timeSpent },
+            { "totalPoints", totalPoints }
         };
 
         databaseReference.Child("scores").Child(key).SetValueAsync(entryData).ContinueWithOnMainThread(task =>
