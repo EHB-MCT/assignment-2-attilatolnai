@@ -11,9 +11,7 @@ public class starItem : MonoBehaviour
     public TextMeshProUGUI starText;
     public TextMeshProUGUI starPointsUI;
 
-    //public int starScore => starCount * starPoint;
-
-    // Update the UI text with the current star count
+    //Displays the amount of stars collected and points scored from star items in the game's interface.
     void Update()
     {
         starText.text = "Stars Collected: " + starCount.ToString();

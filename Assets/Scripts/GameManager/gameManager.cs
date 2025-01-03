@@ -35,8 +35,6 @@ public class gameManager : MonoBehaviour
 
     public TextMeshProUGUI topPlayersDataText;
 
-    public Button sendButton;
-
     //Data values
     public int circleCount;
     public int triangleCount;

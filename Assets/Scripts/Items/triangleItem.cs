@@ -11,8 +11,7 @@ public class triangleItem : MonoBehaviour
     public TextMeshProUGUI triangleText;
     public TextMeshProUGUI trianglePointsUI;
 
-    //public int triangleScore => triangleCount * triangePoint;
-    // Update the UI text with the current triangle count
+    //Displays the amount of triangles collected and points scored from triangle items in the game's interface.
     void Update()
     {
         triangleText.text = "Triangles Collected: " + triangleCount.ToString();

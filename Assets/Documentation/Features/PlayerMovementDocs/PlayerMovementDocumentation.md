@@ -1,69 +1,68 @@
 # PlayerMovement Script Documentation
 
 ## Overview
-This script manages the player's movement in my 2D top-down Unity game made for Development 5. It uses Unity's Rigidbody2D component to handle movement physics and ensures smooth directional control.
-
----
+The `PlayerMovement` script handles the player's movement in a 2D game using `Rigidbody2D` physics. It also processes player input, manages collisions with game objects, and interacts with other scripts to update scores and game state.
 
 ## Script Details
 
-### **Fields:**
-- **moveSpeed (float):**
-  Determines how fast the player moves. This value can be adjusted in the Inspector to balance gameplay.
+### **Variables:**
+- **moveSpeed (float):** 
+  The movement speed of the player.
+- **rigidbody (Rigidbody2D):** 
+  Reference to the `Rigidbody2D` component attached to the player GameObject.
+- **moveDirection (Vector2):** 
+  The current movement direction of the player.
+- **ci (circleItem):** 
+  Reference to the `circleItem` script, which tracks the count and point value of collected circles.
+- **ti (triangleItem):** 
+  Reference to the `triangleItem` script, which tracks the count and point value of collected triangles.
+- **si (starItem):** 
+  Reference to the `starItem` script, which tracks the count and point value of collected stars.
+- **gm (gameManager):** 
+  Reference to the `gameManager` script, which controls the game's state.
+- **sc (ScoreCalculator):** Reference to the `ScoreCalculator` script, which calculates the player's total score and keeps updating it while the game runs.
 
-- **rigidbody (Rigidbody2D):**
-  The Rigidbody2D component attached to the player. It allows for physics-based movement.
+## Methods
+- **Update():** 
+  - Called every frame to process player input and update the movement direction.
+  - Calls the `ProcessInputs()` method.
 
-### **Methods:**
-#### `Update()`
-- Processes player inputs every frame.
-- Calls `ProcessInputs()` to determine the current movement direction.
+- **FixedUpdate():**
+  - Called at fixed intervals to apply movement to the player.
+  - Calls the `Move()` method.
 
-#### `FixedUpdate()`
-- Handles actual player movement at fixed intervals for consistent physics calculations.
-- Calls `Move()` to apply velocity to the Rigidbody2D.
+- **ProcessInputs():**
+  - Checks for player input using the keyboard.
+  - Updates `moveDirection` based on the input, normalizing the vector to ensure consistent movement speed.
 
-#### `ProcessInputs()`
-- Reads input from the player (keyboard) using Unity's `Input.GetAxisRaw()` method.
-- Normalizes the input to maintain consistent speed regardless of diagonal movement.
+- **Move():**
+  - Applies movement to the player by updating the velocity of the `Rigidbody2D` component.
+  
+- **OnTriggerEnter2D(Collider2D other):**
+  Detects collisions with other objects and executes appropriate actions:
+    - **If the collided object has a "Circle" tag:**
+      - Increments the circle counter in the `circleItem` script.
+      - Updates the total score using the `ScoreCalculator`.
+      - Destroys the collided object.
+    - **If the collided object has a "Triangle" tag:**
+      - Increments the triangle counter in the `triangleItem` script.
+      - Updates the total score using the `ScoreCalculator`.
+      - Destroys the collided object.
+    - **If the collided object has a "Star" tag:**
+      - Increments the star counter in the `starItem` script.
+      - Updates the total score using the `ScoreCalculator`.
+      - Destroys the collided object.
+    - **If the collided object has a "StartArea" tag:**
+      - Checks if any items were collected. If so, triggers the game-over state by calling `GameOver()` in the `gameManager`.
 
-#### `Move()`
-- Sets the Rigidbody2D's velocity based on the calculated movement direction and speed.
-
----
-
-## Why This Approach?
-
-### **Why Use Rigidbody2D for Movement?**
-- Unity's Rigidbody2D component allows for physics-based movement, ensuring smooth transitions and collisions.
-- Using velocity directly offers precise control over movement without needing to manually adjust positions.
-
-### **Why Normalize Movement Direction?**
-- Normalizing the direction vector ensures the player moves at a consistent speed in all directions, even diagonally.
-- Without normalization, diagonal movement would be faster due to vector addition.
-
----
 
 ## How to Use
-1. Attach the `PlayerMovement` script to the player GameObject.
-2. Assign the Rigidbody2D component to the `rigidbody` field in the Inspector.
-3. Set an appropriate `moveSpeed` value in the Inspector.
-4. Ensure Unity's Input settings are configured for "Horizontal" and "Vertical" axes.
-
----
-
-## Future Improvements
-- Add acceleration and deceleration for smoother movement transitions.
-- Add sound effects when the player is moving.
-- Add collision effect when hitting a wall. 
-- Integrate animations based on movement direction.
-
----
-
-## Author Notes
-This script was designed for simplicity and performance. The code adheres to Unity’s best practices for physics-based movement and uses a modular approach, making it easy to extend or adapt for different game mechanics.
+1. Attach the `PlayerMovement` script to the player GameObject in the Unity Editor.
+2. Assign the `Rigidbody2D` component of the player to the `rigidbody` variable.
+3. Set an appropriate value for the `moveSpeed` variable to control the player's movement speed.
+4. Link the `circleItem`, `triangleItem`, `starItem`, `gameManager`, and `ScoreCalculator` scripts in the Inspector.
+5. Ensure that objects in the game have the appropriate tags ("Circle", "Triangle", "Star", "StartArea") for collision detection.
 
 ## Sources
-
 - Youtube tutorial by BMo: https://www.youtube.com/watch?v=u8tot-X_RBI&t=80s
-- ChatGPT for help with documentation structure: https://chatgpt.com/share/674876ec-2e5c-8007-b4b3-c50ddd7f8926
+- ChatGPT for help with documentation structure: https://chatgpt.com/share/6777fd9a-e788-8007-9266-d94880160040
