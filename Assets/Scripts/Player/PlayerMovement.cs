@@ -64,13 +64,19 @@ public class PlayerMovement : MonoBehaviour
             sc.si.starCount++;
             sc.UpdateTotalScore();
         }
-
-        if (other.gameObject.CompareTag("StartArea"))
-        {
-            if (ci.circleCount > 0 || ti.triangleCount > 0 || si.starCount > 0)
-            {
-                gm.GameOver();
-            }
-        }
     }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            Debug.Log("Player hit a wall!");
+
+            // Stop the player's movement
+            rigidbody.velocity = Vector2.zero;
+
+            // Optional: Slightly adjust the player's position to avoid clipping
+            rigidbody.position -= moveDirection * 0.1f;
+        }
+    }   
 }

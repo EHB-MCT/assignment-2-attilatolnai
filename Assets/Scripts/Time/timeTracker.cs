@@ -15,6 +15,8 @@ public class timeTracker : MonoBehaviour
     public float countdownTime = 60f;
     private bool isCountdownRunning = false;
 
+    public gameManager gm;
+
     void Start()
     {
         timeUpText.gameObject.SetActive(false);
@@ -38,6 +40,7 @@ public class timeTracker : MonoBehaviour
                 countdownTime = 0f;
                 timeUpText.gameObject.SetActive(true);
                 StopCountdown();
+                EndGame();
             }
         }
     }
@@ -65,7 +68,7 @@ public class timeTracker : MonoBehaviour
     private void UpdateCountdownDisplay()
     {
         if (countdownTime <= 0) return;
-        
+
         int minutes = Mathf.FloorToInt(countdownTime / 60);
         int seconds = Mathf.FloorToInt(countdownTime % 60);
 
@@ -99,6 +102,14 @@ public class timeTracker : MonoBehaviour
             int minutes = Mathf.FloorToInt(timeSpent / 60);
             int seconds = Mathf.FloorToInt(timeSpent % 60);
             return string.Format("{0:00}:{1:00}", minutes, seconds);
+        }
+    }
+
+    private void EndGame()
+    {
+        if (gm != null)
+        {
+            gm.GameOver();
         }
     }
 
