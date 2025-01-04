@@ -66,20 +66,26 @@ public class gameManager : MonoBehaviour
         gameOverMenu.SetActive(false);
         InitializeFirebase();
 
-        if (tt != null)
-        {
-            tt.ResetTime();
-            tt.StartTimer();
-        }
 
         if (uim != null)
         {
-            playerName = uim.playerName;
-            Debug.Log("Player Name: " + playerName);
+            //playerName = uim.playerName;
+            //Debug.Log("Player Name: " + playerName);
+            uim.OnGameStart += OnGameStart;
         }
         else
         {
             Debug.LogError("UIManager not assigned in gameManager!");
+        }
+    }
+
+    void OnGameStart()
+    {   
+        if (tt != null)
+        {
+            tt.ResetTime();
+            tt.StartTimer();
+            tt.StartCountdown();
         }
     }
 
