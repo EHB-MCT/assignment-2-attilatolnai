@@ -6,7 +6,7 @@
 
 **Objective** 
 - Score as many points as possible by collecting items before the timer runs out.
-- 
+
 **How to play?** 
 1. Enter your name in the input field and press "Start."
 2. Use the arrow keys to move your character:
@@ -75,7 +75,7 @@ This project includes a feature to track player actions and gather gameplay data
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see the [Contributing guidelines](CONTRIBUTING_GUIDELINES) for details.
+We welcome contributions! Please see the [Contributing guidelines](CONTRIBUTING_GUIDELINE) for details.
 
 ## 📜 License
 
