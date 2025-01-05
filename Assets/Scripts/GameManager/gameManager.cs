@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,7 +41,7 @@ public class gameManager : MonoBehaviour
     public int triangleCount;
     public int starCount;
     public float timeSpent;
-    //public float formattedTime;
+    public float formattedTime;
     public bool isGameRunning;
     public string playerName;
 
@@ -69,8 +70,7 @@ public class gameManager : MonoBehaviour
 
         if (uim != null)
         {
-            //playerName = uim.playerName;
-            //Debug.Log("Player Name: " + playerName);
+
             uim.OnGameStart += OnGameStart;
         }
         else
@@ -153,8 +153,8 @@ public class gameManager : MonoBehaviour
             );
         }
 
-        FetchPreviousPlayerData();
-
+        FetchPreviousTwoGames(uim.playerName);
+        
         circleCount = ci.circleCount;
         triangleCount = ti.triangleCount;
         starCount = si.starCount;
@@ -166,12 +166,11 @@ public class gameManager : MonoBehaviour
         totalScoreText.text = "Total points: " + totalPoints.ToString();
 
         Time.timeScale = 0f;        
-
+        
         DisplayTopPlayers();
     }
 
-    //Get data from the previous player
-    public void FetchPreviousPlayerData()
+    public void FetchPreviousTwoGames(string playerName)
     {
         if (databaseReference == null)
         {
@@ -179,8 +178,7 @@ public class gameManager : MonoBehaviour
             return;
         }
 
-        // Fetch the last entry under 'scores'.
-        databaseReference.Child("scores").OrderByKey().LimitToLast(1).GetValueAsync().ContinueWithOnMainThread(task =>
+        databaseReference.Child("scores").OrderByChild("playerName").EqualTo(playerName).GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted)
             {
@@ -192,35 +190,69 @@ public class gameManager : MonoBehaviour
                 DataSnapshot snapshot = task.Result;
                 if (snapshot.Exists)
                 {
+                    Debug.Log("Data fetched from Firebase!"); // Check if data is being fetched
+                    string stats = playerName + "'s previous 2 runs:\n";
+                    
+                    List<(string playerNameFromDB, string circles, string triangles, string stars, string timeSpent, string totalPoints, string timestamp)> gameData = new List<(string, string, string, string, string, string, string)>();
+                    
                     foreach (var child in snapshot.Children)
                     {
-                        string playerName = child.Child("playerName").Value?.ToString();
-                        string circleCount = child.Child("circleCount").Value?.ToString();
-                        string triangleCount = child.Child("triangleCount").Value?.ToString();
-                        string starCount = child.Child("starCount").Value?.ToString();
-                        string formattedTime = child.Child("timeSpent").Value?.ToString();
-                        Debug.Log("Fetched formattedTime: " + formattedTime + " seconds.");
+                        string playerNameFromDB = child.Child("playerName").Value?.ToString();
+                        string circles = child.Child("circleCount").Value?.ToString();
+                        string triangles = child.Child("triangleCount").Value?.ToString();
+                        string stars = child.Child("starCount").Value?.ToString();
+                        string timeSpent = child.Child("timeSpent").Value?.ToString();
                         string totalPoints = child.Child("totalPoints").Value?.ToString();
+                        string timestamp = child.Child("timestamp").Value?.ToString();
 
-                        // Update the UI text with the fetched data.
-                        previousPlayerDataText.text = "From the database:\n" +
-                                                      $"Last Player: {playerName}\n" +
-                                                      $"Circles Collected: {circleCount}\n" +
-                                                      $"Triangles Collected: {triangleCount}\n" +
-                                                      $"Stars Collected: {starCount}\n" +
-                                                      $"Time Spent: {formattedTime}\n" +
-                                                      $"Total Points Scored: {totalPoints}";
-                        Debug.Log("Previous player data updated successfully.");
+                        if (!string.IsNullOrEmpty(circles) && !string.IsNullOrEmpty(triangles) && 
+                        !string.IsNullOrEmpty(stars) && !string.IsNullOrEmpty(timeSpent) && 
+                        !string.IsNullOrEmpty(totalPoints) && !string.IsNullOrEmpty(timestamp))
+                        {
+                            gameData.Add((playerNameFromDB, 
+                            circles, 
+                            triangles, 
+                            stars, 
+                            timeSpent, 
+                            totalPoints, 
+                            timestamp));
+                        }
+                    }
+
+                    var sortedGames = gameData.OrderByDescending(game => game.timestamp).Take(2).ToList();
+
+                    if (sortedGames.Any())
+                    {
+                        foreach (var game in sortedGames)
+                        {
+                            stats += $"Player: {game.playerNameFromDB}\n" +
+                                $"Circles: {game.circles},\n" +
+                                $"Triangles: {game.triangles},\n" +
+                                $"Stars: {game.stars},\n" +
+                                $"Time: {game.timeSpent},\n" + 
+                                $"Points: {game.totalPoints}\n" +
+                                $"Timestamp: {game.timestamp}\n" +
+                                "\n";
+                        }
+
+                        Debug.Log("Stats: " + stats); // Check the full stats output
+                        previousPlayerDataText.text = stats;
+                    }
+                    else
+                    {
+                        Debug.LogWarning("No valid data found for this player.");
+                        previousPlayerDataText.text = "No complete previous games found.";
                     }
                 }
                 else
                 {
-                    Debug.LogWarning("No data found in the database.");
-                    previousPlayerDataText.text = "No previous player data found.";
+                    Debug.LogWarning("No data found in Firebase.");
+                    previousPlayerDataText.text = "No previous games found.";
                 }
             }
         });
     }
+    
 
     public void DisplayTopPlayers()
     {

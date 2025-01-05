@@ -44478,6 +44478,7 @@ MonoBehaviour:
   triangleCount: 0
   starCount: 0
   timeSpent: 0
+  formattedTime: 0
   isGameRunning: 0
   playerName: 
   ci: {fileID: 2097583317}
