@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,6 +25,7 @@ public class sendPlayerData : MonoBehaviour
         }
 
         string key = databaseReference.Child("scores").Push().Key;
+        long timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         var entryData = new Dictionary<string, object>
         {
             { "playerName", playerName },
@@ -31,7 +33,8 @@ public class sendPlayerData : MonoBehaviour
             { "triangleCount", triangleCount },
             { "starCount", starCount },
             { "timeSpent", formattedTime },
-            { "totalPoints", totalPoints }
+            { "totalPoints", totalPoints },
+            { "timestamp", timestamp}
         };
 
         databaseReference.Child("scores").Child(key).SetValueAsync(entryData).ContinueWithOnMainThread(task =>

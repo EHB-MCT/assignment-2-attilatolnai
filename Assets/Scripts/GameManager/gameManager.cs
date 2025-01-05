@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,7 +41,7 @@ public class gameManager : MonoBehaviour
     public int triangleCount;
     public int starCount;
     public float timeSpent;
-    //public float formattedTime;
+    public float formattedTime;
     public bool isGameRunning;
     public string playerName;
 
@@ -53,6 +54,8 @@ public class gameManager : MonoBehaviour
     public UIManager uim;
     public ScoreCalculator sc;
     public Leaderboard lb;
+    public getPreviousTwoGames gptg;
+    public compareToHighscore cth;
 
     public DatabaseReference databaseReference
     {
@@ -69,8 +72,7 @@ public class gameManager : MonoBehaviour
 
         if (uim != null)
         {
-            //playerName = uim.playerName;
-            //Debug.Log("Player Name: " + playerName);
+
             uim.OnGameStart += OnGameStart;
         }
         else
@@ -121,7 +123,6 @@ public class gameManager : MonoBehaviour
         });
     }
 
-    //When the player gets a game over
     public void GameOver()
     {
         isGameRunning = false;
@@ -133,7 +134,6 @@ public class gameManager : MonoBehaviour
         if (tt != null)
         {
             tt.StopTimer();
-            //timeSpentText.text = "Time spent: " + Mathf.FloorToInt(tt.timeSpent) + " seconds";
             if (timeSpentText != null)
             {
                 timeSpentText.text = "Time Spent: " + tt.formattedTime;
@@ -153,8 +153,24 @@ public class gameManager : MonoBehaviour
             );
         }
 
-        FetchPreviousPlayerData();
+        if (gptg != null)
+        {
+            gptg.FetchPreviousTwoGames(uim.playerName);
+        }
+        else
+        {
+            Debug.LogError("getPreviousTwoGames script not found in the scene!");
+        }
 
+        if (cth != null)
+        {
+            cth.CompareToHighscore(uim.playerName);
+        }
+        else
+        {
+            Debug.LogError("compareToHighscore script not found in the scene!");
+        }
+        
         circleCount = ci.circleCount;
         triangleCount = ti.triangleCount;
         starCount = si.starCount;
@@ -166,60 +182,8 @@ public class gameManager : MonoBehaviour
         totalScoreText.text = "Total points: " + totalPoints.ToString();
 
         Time.timeScale = 0f;        
-
+        
         DisplayTopPlayers();
-    }
-
-    //Get data from the previous player
-    public void FetchPreviousPlayerData()
-    {
-        if (databaseReference == null)
-        {
-            Debug.LogError("Firebase database reference is not initialized!");
-            return;
-        }
-
-        // Fetch the last entry under 'scores'.
-        databaseReference.Child("scores").OrderByKey().LimitToLast(1).GetValueAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.IsFaulted)
-            {
-                Debug.LogError("Error fetching data: " + task.Exception);
-                previousPlayerDataText.text = "Error fetching data.";
-            }
-            else if (task.IsCompleted)
-            {
-                DataSnapshot snapshot = task.Result;
-                if (snapshot.Exists)
-                {
-                    foreach (var child in snapshot.Children)
-                    {
-                        string playerName = child.Child("playerName").Value?.ToString();
-                        string circleCount = child.Child("circleCount").Value?.ToString();
-                        string triangleCount = child.Child("triangleCount").Value?.ToString();
-                        string starCount = child.Child("starCount").Value?.ToString();
-                        string formattedTime = child.Child("timeSpent").Value?.ToString();
-                        Debug.Log("Fetched formattedTime: " + formattedTime + " seconds.");
-                        string totalPoints = child.Child("totalPoints").Value?.ToString();
-
-                        // Update the UI text with the fetched data.
-                        previousPlayerDataText.text = "From the database:\n" +
-                                                      $"Last Player: {playerName}\n" +
-                                                      $"Circles Collected: {circleCount}\n" +
-                                                      $"Triangles Collected: {triangleCount}\n" +
-                                                      $"Stars Collected: {starCount}\n" +
-                                                      $"Time Spent: {formattedTime}\n" +
-                                                      $"Total Points Scored: {totalPoints}";
-                        Debug.Log("Previous player data updated successfully.");
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("No data found in the database.");
-                    previousPlayerDataText.text = "No previous player data found.";
-                }
-            }
-        });
     }
 
     public void DisplayTopPlayers()

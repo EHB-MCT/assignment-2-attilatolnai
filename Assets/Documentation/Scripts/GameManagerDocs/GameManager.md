@@ -53,32 +53,36 @@ The `gameManager` script serves as the main controller for managing the game's s
   Name of the player.
 
 ### **References to Other Scripts:**
-- **circleItem:** 
+- **circleItem (ci):** 
   Handles the gameplay logic related to the circle item the player has to collect.
-- **triangleItem:** 
+- **triangleItem (ti):** 
   Handles the gameplay logic related to the triangle item the player has to collect.
-- **starItem:** 
+- **starItem (si):** 
   Handles the gameplay logic related to the star item the player has to collect.
-- **timeTracker:** 
+- **timeTracker (tt):** 
   Tracks and manages game time.
-- **sendPlayerData:** 
+- **sendPlayerData (spd):** 
   Submits player data to the Firebase database.
-- **UIManager:** 
+- **UIManager (uim):** 
   Manages UI-related logic.
-- **ScoreCalculator:** 
+- **ScoreCalculator (sc):** 
   Calculates the total score by adding up the points from the circles, triangles and stars collected by the player.
-- **Leaderboard:** 
+- **Leaderboard (lb):** 
   Fetches and displays the data of the players with the highest score achieved in the game in the form of a leaderboard.
+- **getPreviousTwoGames (gptg):** 
+  Fetches and displays the players last two games.
+- **compareToHighscore (cth):** 
+  Fetches and displays the players latest game with his best game to compare the stats.
 
 ## **Methods**
 - **Start():** 
-  Initializes the game state, Firebase connection, resetting the timer and making sure that the player field is not empty when starting.
+  Initializes Firebase connection, disables the gameOverMenu in the UI and makes sure that the player field is not empty when starting.
+- **OnGameStart():** 
+  Resets the timer back to 0 and the countdown back to 60 and then starts them.
 - **InitializeFirebase():** 
   Sets up Firebase dependencies and initializes the database reference.
 - **GameOver():** 
-  Handles the game-over state. It submits the player's data and then calls 'FetchPreviousPlayerData()' and 'DisplayTopPlayers()'.
-- **FetchPreviousPlayerData():** 
-  Once called, it retrieves the player's data from Firebase and updates the UI so that it's visible in the game over screen.
+  Handles the game-over state. It submits the player's data to another script and then calls 'FetchPreviousTwoGames()', 'CompareToHighscore' and 'DisplayTopPlayers()' from other scripts.
 - **DisplayTopPlayers():** 
   Once called, it fetches the players with the highest score and displays them in the game over menu.
 
