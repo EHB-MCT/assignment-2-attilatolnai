@@ -8,18 +8,25 @@ The `PlayerMovement` script handles the player's movement in a 2D game using `Ri
 ### **Variables:**
 - **moveSpeed (float):** 
   The movement speed of the player.
+
 - **rigidbody (Rigidbody2D):** 
   Reference to the `Rigidbody2D` component attached to the player GameObject.
+
 - **moveDirection (Vector2):** 
   The current movement direction of the player.
+
 - **ci (circleItem):** 
   Reference to the `circleItem` script, which tracks the count and point value of collected circles.
+
 - **ti (triangleItem):** 
   Reference to the `triangleItem` script, which tracks the count and point value of collected triangles.
+
 - **si (starItem):** 
   Reference to the `starItem` script, which tracks the count and point value of collected stars.
+
 - **gm (gameManager):** 
   Reference to the `gameManager` script, which controls the game's state.
+
 - **sc (ScoreCalculator):** Reference to the `ScoreCalculator` script, which calculates the player's total score and keeps updating it while the game runs.
 
 ## Methods
@@ -36,7 +43,7 @@ The `PlayerMovement` script handles the player's movement in a 2D game using `Ri
   - Updates `moveDirection` based on the input, normalizing the vector to ensure consistent movement speed.
 
 - **Move():**
-  - Applies movement to the player by updating the velocity of the `Rigidbody2D` component.
+  Applies movement to the player by updating the velocity of the `Rigidbody2D` component.
   
 - **OnTriggerEnter2D(Collider2D other):**
   Detects collisions with other objects and executes appropriate actions:
@@ -52,8 +59,12 @@ The `PlayerMovement` script handles the player's movement in a 2D game using `Ri
       - Increments the star counter in the `starItem` script.
       - Updates the total score using the `ScoreCalculator`.
       - Destroys the collided object.
-    - **If the collided object has a "StartArea" tag:**
-      - Checks if any items were collected. If so, triggers the game-over state by calling `GameOver()` in the `gameManager`.
+  
+- **OnCollisionEnter2D(Collision2D collision):**
+  - If the player collides with an object that has the "Wall" tag:
+    - Displays an log message: "Player hit a wall!".
+    - Stops the player's movement.
+    - Slightly adjusts the player's position to avoid clipping.
 
 
 ## How to Use
@@ -61,7 +72,7 @@ The `PlayerMovement` script handles the player's movement in a 2D game using `Ri
 2. Assign the `Rigidbody2D` component of the player to the `rigidbody` variable.
 3. Set an appropriate value for the `moveSpeed` variable to control the player's movement speed.
 4. Link the `circleItem`, `triangleItem`, `starItem`, `gameManager`, and `ScoreCalculator` scripts in the Inspector.
-5. Ensure that objects in the game have the appropriate tags ("Circle", "Triangle", "Star", "StartArea") for collision detection.
+5. Ensure that objects in the game have the appropriate tags ("Circle", "Triangle", "Star", "Wall") for collision detection.
 
 ## Sources
 - Youtube tutorial by BMo: https://www.youtube.com/watch?v=u8tot-X_RBI&t=80s

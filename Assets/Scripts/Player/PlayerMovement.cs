@@ -72,10 +72,10 @@ public class PlayerMovement : MonoBehaviour
         {
             Debug.Log("Player hit a wall!");
 
-            // Stop the player's movement
+            //Stop the player's movement
             rigidbody.velocity = Vector2.zero;
 
-            // Optional: Slightly adjust the player's position to avoid clipping
+            //Slightly adjust the player's position to avoid clipping
             rigidbody.position -= moveDirection * 0.1f;
         }
     }   
