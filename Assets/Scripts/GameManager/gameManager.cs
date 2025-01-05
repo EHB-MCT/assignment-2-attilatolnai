@@ -54,6 +54,7 @@ public class gameManager : MonoBehaviour
     public UIManager uim;
     public ScoreCalculator sc;
     public Leaderboard lb;
+    public getPreviousTwoGames gptg;
 
     public DatabaseReference databaseReference
     {
@@ -153,7 +154,15 @@ public class gameManager : MonoBehaviour
             );
         }
 
-        FetchPreviousTwoGames(uim.playerName);
+        //FetchPreviousTwoGames(uim.playerName);
+        if (gptg != null)
+        {
+            gptg.FetchPreviousTwoGames(uim.playerName);
+        }
+        else
+        {
+            Debug.LogError("getPreviousTwoGames script not found in the scene!");
+        }
         
         circleCount = ci.circleCount;
         triangleCount = ti.triangleCount;
@@ -170,6 +179,7 @@ public class gameManager : MonoBehaviour
         DisplayTopPlayers();
     }
 
+    /*
     public void FetchPreviousTwoGames(string playerName)
     {
         if (databaseReference == null)
@@ -298,7 +308,7 @@ public class gameManager : MonoBehaviour
             }
         });
     }
-    
+    */
 
     public void DisplayTopPlayers()
     {
