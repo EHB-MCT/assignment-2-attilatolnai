@@ -15,6 +15,6 @@ public class starItem : MonoBehaviour
     void Update()
     {
         starText.text = "Stars Collected: " + starCount.ToString();
-        starPointsUI.text = "Circle Points: " + (starCount * starPoint).ToString();
+        starPointsUI.text = "Star Points: " + (starCount * starPoint).ToString();
     }
 }
