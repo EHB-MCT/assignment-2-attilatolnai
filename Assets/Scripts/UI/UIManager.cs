@@ -18,6 +18,11 @@ public class UIManager : MonoBehaviour
 
     public bool isGameRunning = false;
 
+    //public gameManager gm;
+    //public PlayerMovement pm;
+
+    public delegate void GameStartEventHandler();
+    public event GameStartEventHandler OnGameStart;
 
     void Start()
     {
@@ -37,6 +42,7 @@ public class UIManager : MonoBehaviour
         {
             startMenu.SetActive(false);
             isGameRunning = true;
+            OnGameStart?.Invoke();
         }
         else
         {

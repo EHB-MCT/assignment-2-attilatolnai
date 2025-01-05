@@ -10,7 +10,7 @@ public class sendPlayerData : MonoBehaviour
 
     public gameManager gm;
 
-    public void SubmitPlayerData(string playerName, int circleCount, int triangleCount, int starCount, float timeSpent, int totalPoints)
+    public void SubmitPlayerData(string playerName, int circleCount, int triangleCount, int starCount, string formattedTime, int totalPoints)
     {
         gameManager gm = FindObjectOfType<gameManager>();
         if (gm != null && gm.firebaseInitialized)
@@ -30,7 +30,7 @@ public class sendPlayerData : MonoBehaviour
             { "circleCount", circleCount },
             { "triangleCount", triangleCount },
             { "starCount", starCount },
-            { "timeSpent", timeSpent },
+            { "timeSpent", formattedTime },
             { "totalPoints", totalPoints }
         };
 

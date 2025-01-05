@@ -40,6 +40,7 @@ public class gameManager : MonoBehaviour
     public int triangleCount;
     public int starCount;
     public float timeSpent;
+    //public float formattedTime;
     public bool isGameRunning;
     public string playerName;
 
@@ -65,20 +66,26 @@ public class gameManager : MonoBehaviour
         gameOverMenu.SetActive(false);
         InitializeFirebase();
 
-        if (tt != null)
-        {
-            tt.ResetTime();
-            tt.StartTimer();
-        }
 
         if (uim != null)
         {
-            playerName = uim.playerName;
-            Debug.Log("Player Name: " + playerName);
+            //playerName = uim.playerName;
+            //Debug.Log("Player Name: " + playerName);
+            uim.OnGameStart += OnGameStart;
         }
         else
         {
             Debug.LogError("UIManager not assigned in gameManager!");
+        }
+    }
+
+    void OnGameStart()
+    {   
+        if (tt != null)
+        {
+            tt.ResetTime();
+            tt.StartTimer();
+            tt.StartCountdown();
         }
     }
 
@@ -126,13 +133,24 @@ public class gameManager : MonoBehaviour
         if (tt != null)
         {
             tt.StopTimer();
-            timeSpentText.text = "Time spent: " + Mathf.FloorToInt(tt.timeSpent) + " seconds";
+            //timeSpentText.text = "Time spent: " + Mathf.FloorToInt(tt.timeSpent) + " seconds";
+            if (timeSpentText != null)
+            {
+                timeSpentText.text = "Time Spent: " + tt.formattedTime;
+            }
         }
 
         sendPlayerData spd = FindObjectOfType<sendPlayerData>();
         if (spd != null)
         {
-            spd.SubmitPlayerData(uim.playerName, ci.circleCount, ti.triangleCount, si.starCount, tt.timeSpent, totalPoints);
+            spd.SubmitPlayerData(
+                uim.playerName, 
+                ci.circleCount, 
+                ti.triangleCount, 
+                si.starCount, 
+                tt.formattedTime, 
+                totalPoints
+            );
         }
 
         FetchPreviousPlayerData();
@@ -180,7 +198,8 @@ public class gameManager : MonoBehaviour
                         string circleCount = child.Child("circleCount").Value?.ToString();
                         string triangleCount = child.Child("triangleCount").Value?.ToString();
                         string starCount = child.Child("starCount").Value?.ToString();
-                        string timeSpent = child.Child("timeSpent").Value?.ToString();
+                        string formattedTime = child.Child("timeSpent").Value?.ToString();
+                        Debug.Log("Fetched formattedTime: " + formattedTime + " seconds.");
                         string totalPoints = child.Child("totalPoints").Value?.ToString();
 
                         // Update the UI text with the fetched data.
@@ -189,7 +208,7 @@ public class gameManager : MonoBehaviour
                                                       $"Circles Collected: {circleCount}\n" +
                                                       $"Triangles Collected: {triangleCount}\n" +
                                                       $"Stars Collected: {starCount}\n" +
-                                                      $"Time Spent: {timeSpent} seconds\n" +
+                                                      $"Time Spent: {formattedTime}\n" +
                                                       $"Total Points Scored: {totalPoints}";
                         Debug.Log("Previous player data updated successfully.");
                     }

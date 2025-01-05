@@ -10,14 +10,14 @@ The `sendPlayerData` script handles sending the player's data to a Firebase Real
   Reference to the `gameManager` script for Firebase initialization and database access.
 
 ## Methods
-- **SubmitPlayerData(string playerName, int circleCount, int triangleCount, int starCount, float timeSpent, int totalPoints):**
+- **SubmitPlayerData(string playerName, int circleCount, int triangleCount, int starCount, string formattedTime, int totalPoints):**
   Submits player data to the Firebase Realtime Database under the "scores" node.
   - **Parameters:**
     - **playerName (string):** The name of the player.
     - **circleCount (int):** The number of circles collected by the player.
     - **triangleCount (int):** The number of triangles collected by the player.
     - **starCount (int):** The number of stars collected by the player.
-    - **timeSpent (float):** The total time spent by the player in the game.
+    - **formattedTime (string):** The total time spent by the player in the game in the MM:SS format.
     - **totalPoints (int):** The total score achieved by the player.
   - **Functionality:**
     - Retrieves the `DatabaseReference` from the `gameManager` script if Firebase is initialized.

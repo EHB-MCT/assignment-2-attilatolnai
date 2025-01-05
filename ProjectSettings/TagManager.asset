@@ -8,14 +8,15 @@ TagManager:
   - StartArea
   - Star
   - Triangle
+  - Wall
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - 
+  - Wall
   - 
   - 
   - 

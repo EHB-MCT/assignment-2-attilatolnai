@@ -70,7 +70,7 @@ The `gameManager` script serves as the main controller for managing the game's s
 - **Leaderboard:** 
   Fetches and displays the data of the players with the highest score achieved in the game in the form of a leaderboard.
 
-## Methods
+## **Methods**
 - **Start():** 
   Initializes the game state, Firebase connection, resetting the timer and making sure that the player field is not empty when starting.
 - **InitializeFirebase():** 
