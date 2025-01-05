@@ -170,7 +170,7 @@ public class gameManager : MonoBehaviour
         {
             Debug.LogError("compareToHighscore script not found in the scene!");
         }
-        
+        /*
         circleCount = ci.circleCount;
         triangleCount = ti.triangleCount;
         starCount = si.starCount;
@@ -182,7 +182,7 @@ public class gameManager : MonoBehaviour
         totalScoreText.text = "Total points: " + totalPoints.ToString();
 
         Time.timeScale = 0f;        
-        
+        */
         DisplayTopPlayers();
     }
 
